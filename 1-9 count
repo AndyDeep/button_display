@@ -1,0 +1,54 @@
+module N_count (
+input clk,rst,
+output[6:0] numb
+);
+reg [6:0] cnt;
+reg [3:0] clk_o;
+reg [31:0] counter;
+reg [3:0] n_count;
+reg[6:0] segment;
+//assign s=segment;
+initial begin
+		cnt <= 7'b0000000;
+		counter = 32'b0;
+		clk_o=0;
+end
+
+always @ (posedge clk) 
+begin
+	
+	if(rst==1)                //hold the current state of LED
+     begin
+          if(counter<25000000)
+               counter <= counter + 1'b1;
+          else
+          begin
+               counter <= 32'b0;
+					clk_o=~clk_o;
+          end
+     end
+     else
+          counter <= 32'b0;
+end
+always @ (posedge(clk_o))
+begin
+
+		case(cnt)			 // 6543210
+			4'b0000:segment=7'b1000000;//0
+			4'b0001:segment=7'b1111001;//1
+			4'b0010:segment=7'b0100100;//2
+			4'b0011:segment=7'b0110000;//3
+			4'b0100:segment=7'b0011001;//4
+			4'b0101:segment=7'b0010010;//5
+			4'b0110:segment=7'b0000010;//6
+			4'b0111:segment=7'b1111000;//7
+			4'b1000:segment=7'b0000000;//8
+			4'b1001:segment=7'b0010000;//9
+		
+		endcase
+		cnt=cnt+1;
+ if (cnt==10)
+		cnt=0;
+end
+assign numb[6:0]=segment;//7'b0000000;
+endmodule
